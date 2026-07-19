@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Studio — Concept A: Noir Atelier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #08080a;
+  --bg-elevated: #111114;
+  --surface: #1a1a1f;
+  --text: #e8e4dd;
+  --text-muted: #6b6760;
+  --accent: #c9a96e;
+  --accent-light: #ddc088;
+  --accent-glow: rgba(201, 169, 110, 0.15);
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--bg);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ═══════════════ CUSTOM CURSOR ═══════════════ */
+.cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease, opacity 0.3s;
+  transform: translate(-50%, -50%);
+}
+.cursor-glow {
+  position: fixed;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.5s;
+}
+.cursor.hover {
+  transform: translate(-50%, -50%) scale(2.5);
+  background: rgba(201, 169, 110, 0.08);
+  border-color: var(--accent-light);
+}
+
+/* ═══════════════ NAVIGATION ═══════════════ */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 24px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  mix-blend-mode: difference;
+  transition: padding 0.4s ease;
+}
+nav.scrolled { padding: 16px 48px; }
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+  align-items: center;
+}
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  position: relative;
+  padding-bottom: 4px;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.nav-links a:hover::after { width: 100%; }
+
+.lang-switch {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+.lang-switch span {
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+  color: #fff;
+}
+.lang-switch span.active { opacity: 1; }
+.lang-switch span:hover { opacity: 0.8; }
+.lang-divider { opacity: 0.2; color: #fff; }
+
+/* ═══════════════ HERO ═══════════════ */
+.hero {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 48px 80px;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.35) contrast(1.1);
+  transform: scale(1.1);
+  animation: heroZoom 12s ease-in-out infinite alternate;
+}
+@keyframes heroZoom {
+  from { transform: scale(1.1); }
+  to { transform: scale(1.0); }
+}
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--bg) 0%, transparent 40%),
+              linear-gradient(to right, rgba(8,8,10,0.5) 0%, transparent 60%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+}
+.hero-label {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 24px;
+  opacity: 0;
+  transform: translateY(20px);
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 6vw, 80px);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 28px;
+}
+.hero-title .line {
+  display: block;
+  overflow: hidden;
+}
+.hero-title .line-inner {
+  display: block;
+  transform: translateY(110%);
+  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.hero-title .line-inner.revealed { transform: translateY(0); }
+
+.hero-subtitle {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-muted);
+  max-width: 480px;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 40px;
+  padding: 16px 36px;
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: color 0.4s, border-color 0.4s;
+}
+.hero-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: translateX(-101%);
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.hero-cta:hover::before { transform: translateX(0); }
+.hero-cta:hover { color: var(--bg); border-color: var(--accent); }
+.hero-cta span { position: relative; z-index: 1; }
+.hero-cta .arrow {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s;
+}
+.hero-cta:hover .arrow { transform: translateX(4px); }
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 32px;
+  right: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+}
+.scroll-text {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  color: var(--text-muted);
+}
+.scroll-line {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.5); transform-origin: top; }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* ═══════════════ SECTION TITLES ═══════════════ */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 60px;
+}
+.section-number {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  opacity: 0.6;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 400;
+}
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(201, 169, 110, 0.3), transparent);
+}
+
+/* ═══════════════ CATEGORIES ═══════════════ */
+.categories-section {
+  padding: 120px 48px;
+}
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+.category-card {
+  position: relative;
+  aspect-ratio: 1 / 1.1;
+  overflow: hidden;
+  cursor: pointer;
+}
+.category-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.3) saturate(0.5);
+  transition: filter 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: scale(1.05);
+}
+.category-card:hover img {
+  filter: brightness(0.55) saturate(1);
+  transform: scale(1);
+}
+.category-card .overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 32px;
+  background: linear-gradient(to top, rgba(8,8,10,0.8) 0%, transparent 60%);
+}
+.category-card .cat-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  transform: translateY(20px);
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.category-card:hover .cat-name { transform: translateY(0); }
+.category-card .cat-count {
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s 0.1s, transform 0.5s 0.1s;
+}
+.category-card:hover .cat-count {
+  opacity: 1;
+  transform: translateY(0);
+}
+.category-card .cat-line {
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  margin: 12px 0;
+  transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s;
+}
+.category-card:hover .cat-line { width: 40px; }
+
+/* ═══════════════ HORIZONTAL SCROLL GALLERY ═══════════════ */
+.gallery-section {
+  padding: 120px 0 120px 48px;
+}
+.gallery-section .section-header { padding-right: 48px; }
+
+.gallery-track-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+.gallery-track {
+  display: flex;
+  gap: 24px;
+  padding-right: 48px;
+  cursor: grab;
+  user-select: none;
+}
+.gallery-track:active { cursor: grabbing; }
+
+.project-card {
+  flex-shrink: 0;
+  width: 380px;
+  position: relative;
+  overflow: hidden;
+  group: true;
+}
+.project-card .image-wrapper {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.project-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s;
+  filter: brightness(0.85) saturate(0.9);
+}
+.project-card:hover img {
+  transform: scale(1.05);
+  filter: brightness(1) saturate(1);
+}
+.project-card .code-badge {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  padding: 8px 14px;
+  background: rgba(8, 8, 10, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  color: var(--accent);
+  transform: translateY(-10px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.project-card:hover .code-badge {
+  transform: translateY(0);
+  opacity: 1;
+}
+.project-card .card-info {
+  padding: 20px 0;
+}
+.project-card .card-category {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.project-card .card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+/* Gallery scroll hint */
+.gallery-hint {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 40px;
+  padding-right: 48px;
+}
+.hint-text {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.hint-line {
+  width: 100px;
+  height: 1px;
+  background: var(--accent);
+  position: relative;
+  overflow: hidden;
+}
+.hint-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  animation: hintSlide 2s ease-in-out infinite;
+}
+@keyframes hintSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ═══════════════ FEATURED PROJECT ═══════════════ */
+.featured-section {
+  padding: 120px 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.featured-image {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.featured-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.featured-image:hover img { transform: scale(1.03); }
+.featured-image .frame {
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  pointer-events: none;
+  transition: inset 0.5s;
+}
+.featured-image:hover .frame { inset: 24px; }
+
+.featured-info .fi-label {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+.featured-info .fi-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+.featured-info .fi-code {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+.featured-info .fi-desc {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+}
+.featured-info .fi-stats {
+  display: flex;
+  gap: 48px;
+}
+.fi-stat .stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  color: var(--accent);
+}
+.fi-stat .stat-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ═══════════════ CONTACT / CTA ═══════════════ */
+.cta-section {
+  padding: 160px 48px;
+  text-align: center;
+  position: relative;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 400;
+  margin-bottom: 24px;
+  position: relative;
+}
+.cta-subtitle {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 48px;
+  position: relative;
+}
+.cta-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  position: relative;
+}
+.cta-btn {
+  padding: 18px 44px;
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  background: transparent;
+  color: var(--accent);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.4s, border-color 0.4s;
+}
+.cta-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.cta-btn:hover::before { transform: scaleX(1); }
+.cta-btn:hover { color: var(--bg); border-color: var(--accent); }
+.cta-btn span { position: relative; z-index: 1; }
+.cta-btn.primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+.cta-btn.primary::before { background: var(--bg); }
+.cta-btn.primary:hover { color: var(--accent); }
+
+/* ═══════════════ FOOTER ═══════════════ */
+footer {
+  padding: 60px 48px;
+  border-top: 1px solid rgba(201, 169, 110, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+footer .footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+}
+footer .footer-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* ═══════════════ SCROLL ANIMATIONS ═══════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* Concept label */
+.concept-label {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.4;
+  z-index: 100;
+  font-family: 'Space Mono', monospace;
+}
+
+/* Progress bar */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(to right, var(--accent), var(--accent-light));
+  z-index: 101;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="progress-bar" id="progressBar"></div>
+<div class="concept-label">Concept A — Noir Atelier</div>
+
+<!-- NAVIGATION -->
+<nav id="nav">
+  <div class="logo">Home Studio</div>
+  <ul class="nav-links">
+    <li><a href="#gallery" data-hover>Портфолио</a></li>
+    <li><a href="#categories" data-hover>Категории</a></li>
+    <li><a href="#featured" data-hover>О нас</a></li>
+    <li><a href="#contact" data-hover>Контакт</a></li>
+    <li>
+      <div class="lang-switch">
+        <span class="active" data-hover>ՀԱ</span>
+        <span class="lang-divider">|</span>
+        <span data-hover>РУ</span>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=85" alt="Kitchen">
+  </div>
+  <div class="hero-content">
+    <div class="hero-label" id="heroLabel">Արհdelays Անատոադdelays Ադdelays • Gyumri, Armenia</div>
+    <h1 class="hero-title">
+      <span class="line"><span class="line-inner" id="line1">Мы создаём</span></span>
+      <span class="line"><span class="line-inner" id="line2">пространства,</span></span>
+      <span class="line"><span class="line-inner" id="line3" style="color: var(--accent)">которые вдохновляют</span></span>
+    </h1>
+    <p class="hero-subtitle" id="heroSub">Индивидуальная мебель ручной работы. Каждый проект — это уникальная история, созданная для вашего дома.</p>
+    <a href="#gallery" class="hero-cta" id="heroCta" data-hover>
+      <span>Смотреть проекты</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+  <div class="scroll-indicator">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories-section" id="categories">
+  <div class="section-header reveal">
+    <span class="section-number">01</span>
+    <h2 class="section-title">Категории</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="categories-grid">
+    <div class="category-card reveal reveal-delay-1">
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80" alt="Kitchens">
+      <div class="overlay">
+        <span class="cat-name">Кухни</span>
+        <div class="cat-line"></div>
+        <span class="cat-count">12 проектов</span>
+      </div>
+    </div>
+    <div class="category-card reveal reveal-delay-2">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80" alt="Wardrobes">
+      <div class="overlay">
+        <span class="cat-name">Шкафы</span>
+        <div class="cat-line"></div>
+        <span class="cat-count">8 проектов</span>
+      </div>
+    </div>
+    <div class="category-card reveal reveal-delay-3">
+      <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80" alt="Bedrooms">
+      <div class="overlay">
+        <span class="cat-name">Спальни</span>
+        <div class="cat-line"></div>
+        <span class="cat-count">10 проектов</span>
+      </div>
+    </div>
+    <div class="category-card reveal reveal-delay-4">
+      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="Living Rooms">
+      <div class="overlay">
+        <span class="cat-name">Гостиные</span>
+        <div class="cat-line"></div>
+        <span class="cat-count">6 проектов</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY (Horizontal Scroll) -->
+<section class="gallery-section" id="gallery">
+  <div class="section-header reveal">
+    <span class="section-number">02</span>
+    <h2 class="section-title">Последние проекты</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="gallery-track-wrapper">
+    <div class="gallery-track" id="galleryTrack">
+      <div class="project-card">
+        <div class="image-wrapper" data-hover>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=85" alt="Project">
+          <div class="code-badge">KIT-024</div>
+        </div>
+        <div class="card-info">
+          <div class="card-category">Кухни</div>
+          <div class="card-title">Modern Oak Kitchen</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="image-wrapper" data-hover>
+          <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=85" alt="Project">
+          <div class="code-badge">BDR-018</div>
+        </div>
+        <div class="card-info">
+          <div class="card-category">Спальни</div>
+          <div class="card-title">Minimalist Bedroom Suite</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="image-wrapper" data-hover>
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=85" alt="Project">
+          <div class="code-badge">WRD-011</div>
+        </div>
+        <div class="card-info">
+          <div class="card-category">Шкафы</div>
+          <div class="card-title">Walk-in Wardrobe</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="image-wrapper" data-hover>
+          <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=85" alt="Project">
+          <div class="code-badge">LIV-007</div>
+        </div>
+        <div class="card-info">
+          <div class="card-category">Гостиные</div>
+          <div class="card-title">Scandinavian Living Set</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="image-wrapper" data-hover>
+          <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800&q=85" alt="Project">
+          <div class="code-badge">KIT-031</div>
+        </div>
+        <div class="card-info">
+          <div class="card-category">Кухни</div>
+          <div class="card-title">Dark Marble Kitchen</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="gallery-hint">
+    <div class="hint-line"></div>
+    <span class="hint-text">Перетащите для просмотра</span>
+  </div>
+</section>
+
+<!-- FEATURED PROJECT -->
+<section class="featured-section" id="featured">
+  <div class="featured-image reveal" data-hover>
+    <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=900&q=85" alt="Featured">
+    <div class="frame"></div>
+  </div>
+  <div class="featured-info">
+    <div class="fi-label reveal">Избранный проект</div>
+    <h2 class="fi-title reveal reveal-delay-1">Dark Marble<br>Kitchen</h2>
+    <div class="fi-code reveal reveal-delay-2">KIT-031</div>
+    <p class="fi-desc reveal reveal-delay-2">Элегантная кухня из тёмного мрамора с интегрированной подсветкой и фурнитурой из матового золота. Проект выполнен для частной резиденции в Ереване.</p>
+    <div class="fi-stats reveal reveal-delay-3">
+      <div class="fi-stat">
+        <div class="stat-value">48</div>
+        <div class="stat-label">Проектов</div>
+      </div>
+      <div class="fi-stat">
+        <div class="stat-value">6+</div>
+        <div class="stat-label">Лет опыта</div>
+      </div>
+      <div class="fi-stat">
+        <div class="stat-value">100%</div>
+        <div class="stat-label">На заказ</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <h2 class="cta-title reveal">Готовы начать<br>ваш проект?</h2>
+  <p class="cta-subtitle reveal reveal-delay-1">Свяжитесь с нами — обсудим вашу идею</p>
+  <div class="cta-buttons reveal reveal-delay-2">
+    <button class="cta-btn primary" data-hover><span>WhatsApp</span></button>
+    <button class="cta-btn" data-hover><span>Позвонить</span></button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Home Studio</div>
+  <div class="footer-text">© 2026 Home Studio • Gyumri, Armenia</div>
+</footer>
+
+<script>
+// ═══════════════ CUSTOM CURSOR ═══════════════
+const cursor = document.getElementById('cursor');
+const cursorGlow = document.getElementById('cursorGlow');
+let mouseX = 0, mouseY = 0;
+let cursorX = 0, cursorY = 0;
+let glowX = 0, glowY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+function animateCursor() {
+  cursorX += (mouseX - cursorX) * 0.15;
+  cursorY += (mouseY - cursorY) * 0.15;
+  glowX += (mouseX - glowX) * 0.05;
+  glowY += (mouseY - glowY) * 0.05;
+  
+  cursor.style.left = cursorX + 'px';
+  cursor.style.top = cursorY + 'px';
+  cursorGlow.style.left = glowX + 'px';
+  cursorGlow.style.top = glowY + 'px';
+  
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// Hover effect
+document.querySelectorAll('[data-hover]').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+});
+
+// ═══════════════ HERO ANIMATIONS ═══════════════
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('line1').classList.add('revealed');
+  }, 300);
+  setTimeout(() => {
+    document.getElementById('line2').classList.add('revealed');
+  }, 500);
+  setTimeout(() => {
+    document.getElementById('line3').classList.add('revealed');
+  }, 700);
+  setTimeout(() => {
+    const label = document.getElementById('heroLabel');
+    label.style.transition = 'opacity 0.8s, transform 0.8s';
+    label.style.opacity = '1';
+    label.style.transform = 'translateY(0)';
+  }, 900);
+  setTimeout(() => {
+    const sub = document.getElementById('heroSub');
+    sub.style.transition = 'opacity 0.8s, transform 0.8s';
+    sub.style.opacity = '1';
+    sub.style.transform = 'translateY(0)';
+  }, 1100);
+  setTimeout(() => {
+    const cta = document.getElementById('heroCta');
+    cta.style.transition = 'opacity 0.8s, transform 0.8s, color 0.4s, border-color 0.4s';
+    cta.style.opacity = '1';
+    cta.style.transform = 'translateY(0)';
+  }, 1300);
+});
+
+// ═══════════════ SCROLL REVEAL ═══════════════
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ═══════════════ NAV SCROLL ═══════════════
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('nav');
+  nav.classList.toggle('scrolled', window.scrollY > 100);
+  
+  // Progress bar
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = winScroll / height;
+  document.getElementById('progressBar').style.transform = `scaleX(${scrolled})`;
+});
+
+// ═══════════════ HORIZONTAL DRAG SCROLL ═══════════════
+const track = document.getElementById('galleryTrack');
+let isDown = false, startX, scrollLeft;
+
+track.addEventListener('mousedown', (e) => {
+  isDown = true;
+  startX = e.pageX - track.offsetLeft;
+  scrollLeft = track.parentElement.scrollLeft;
+  track.style.cursor = 'grabbing';
+});
+track.addEventListener('mouseleave', () => { isDown = false; track.style.cursor = 'grab'; });
+track.addEventListener('mouseup', () => { isDown = false; track.style.cursor = 'grab'; });
+track.addEventListener('mousemove', (e) => {
+  if (!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - track.offsetLeft;
+  const walk = (x - startX) * 1.5;
+  track.parentElement.scrollLeft = scrollLeft - walk;
+});
+
+// Make wrapper scrollable
+track.parentElement.style.overflowX = 'auto';
+track.parentElement.style.scrollbarWidth = 'none';
+track.parentElement.style.msOverflowStyle = 'none';
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

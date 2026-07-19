@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Studio — Concept C: Obsidian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;600&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0b;
+  --bg-card: #141416;
+  --bg-hover: #1c1c1f;
+  --text: #eae8e3;
+  --text-dim: #5a5854;
+  --accent: #e8563a;
+  --accent-soft: rgba(232, 86, 58, 0.12);
+  --accent-glow: rgba(232, 86, 58, 0.06);
+  --glass: rgba(20, 20, 22, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --radius: 16px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ═══════════════ GRID BACKGROUND ═══════════════ */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══════════════ GRADIENT ORB ═══════════════ */
+.gradient-orb {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+  top: 20%;
+  right: -200px;
+  animation: orbFloat 8s ease-in-out infinite alternate;
+}
+.gradient-orb-2 {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(100, 80, 200, 0.04), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(60px);
+  bottom: 10%;
+  left: -100px;
+  animation: orbFloat2 10s ease-in-out infinite alternate;
+}
+@keyframes orbFloat {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-40px, 60px); }
+}
+@keyframes orbFloat2 {
+  from { transform: translate(0, 0); }
+  to { transform: translate(30px, -50px); }
+}
+
+/* ═══════════════ NAVIGATION ═══════════════ */
+nav {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  padding: 12px 8px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid var(--glass-border);
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+nav a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 100px;
+  transition: all 0.3s;
+  letter-spacing: 0.02em;
+}
+nav a:hover, nav a.active {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+nav .nav-logo {
+  color: var(--text);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 10px 20px;
+  letter-spacing: 0.03em;
+}
+nav .lang-btn {
+  padding: 8px 16px;
+  border-radius: 100px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: none;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.3s;
+  margin-left: 4px;
+}
+nav .lang-btn:hover { background: rgba(232, 86, 58, 0.2); }
+
+/* ═══════════════ HERO ═══════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 120px 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 100px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(232, 86, 58, 0.15);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeDown 0.6s 0.3s ease forwards;
+}
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: blink 2s ease infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-title {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(48px, 7vw, 96px);
+  font-weight: 200;
+  line-height: 1.08;
+  margin-bottom: 28px;
+  letter-spacing: -0.03em;
+}
+.hero-title .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(40px) rotateX(40deg);
+  animation: charReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+@keyframes charReveal {
+  to { opacity: 1; transform: translateY(0) rotateX(0); }
+}
+
+.hero-title .accent { color: var(--accent); }
+.hero-title .gradient-text {
+  background: linear-gradient(135deg, var(--accent) 0%, #e89a3a 50%, var(--accent) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 4s ease infinite;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+  100% { background-position: 0% center; }
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 520px;
+  line-height: 1.7;
+  margin: 0 auto 48px;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.2s ease forwards;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.4s ease forwards;
+}
+
+.btn-glow {
+  padding: 16px 36px;
+  border-radius: 100px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+  letter-spacing: 0.02em;
+}
+.btn-glow::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 100px;
+  background: var(--accent);
+  filter: blur(16px);
+  opacity: 0.4;
+  z-index: -1;
+  transition: opacity 0.3s;
+}
+.btn-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(232, 86, 58, 0.3);
+}
+.btn-glow:hover::after { opacity: 0.6; }
+
+.btn-glass {
+  padding: 16px 36px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.3s;
+  backdrop-filter: blur(10px);
+  letter-spacing: 0.02em;
+}
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Hero image showcase */
+.hero-showcase {
+  margin-top: 80px;
+  width: 100%;
+  max-width: 1100px;
+  position: relative;
+  opacity: 0;
+  animation: scaleReveal 1s 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+@keyframes scaleReveal {
+  from { opacity: 0; transform: scale(0.92) translateY(30px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.showcase-frame {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  position: relative;
+  aspect-ratio: 16/9;
+}
+.showcase-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.showcase-frame:hover img { transform: scale(1.08); }
+
+.showcase-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--bg) 0%, transparent 30%);
+  pointer-events: none;
+}
+
+/* Floating tags */
+.float-tag {
+  position: absolute;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  z-index: 2;
+  font-size: 13px;
+}
+.float-tag-1 {
+  bottom: 80px;
+  left: -20px;
+  animation: tagFloat1 5s ease-in-out infinite alternate;
+}
+.float-tag-2 {
+  top: 40px;
+  right: -20px;
+  animation: tagFloat2 6s ease-in-out infinite alternate;
+}
+.float-tag-3 {
+  bottom: 30px;
+  right: 100px;
+  animation: tagFloat3 4s ease-in-out infinite alternate;
+}
+@keyframes tagFloat1 { from { transform: translateY(0); } to { transform: translateY(-12px); } }
+@keyframes tagFloat2 { from { transform: translateY(0) rotate(-1deg); } to { transform: translateY(-10px) rotate(1deg); } }
+@keyframes tagFloat3 { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+
+.tag-code {
+  font-family: 'Space Mono', monospace;
+  color: var(--accent);
+  font-size: 12px;
+}
+.tag-label {
+  color: var(--text-dim);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* ═══════════════ PROJECTS BENTO GRID ═══════════════ */
+.projects-section {
+  padding: 120px 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 200;
+  letter-spacing: -0.02em;
+}
+
+/* Bento grid */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 340px 340px;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.bento-item {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  transition: border-color 0.4s;
+}
+.bento-item:hover { border-color: rgba(232, 86, 58, 0.2); }
+
+.bento-item:nth-child(1) { grid-column: span 2; }
+.bento-item:nth-child(4) { grid-column: span 2; }
+
+.bento-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s;
+  filter: brightness(0.7) saturate(0.8);
+}
+.bento-item:hover img {
+  transform: scale(1.06);
+  filter: brightness(0.85) saturate(1);
+}
+
+.bento-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10,10,11,0.85) 0%, transparent 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 28px;
+}
+.bento-code {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+  transform: translateY(8px);
+  opacity: 0;
+  transition: all 0.4s 0.05s;
+}
+.bento-item:hover .bento-code { transform: translateY(0); opacity: 1; }
+
+.bento-name {
+  font-family: 'Sora', sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  transform: translateY(8px);
+  opacity: 0.7;
+  transition: all 0.4s 0.1s;
+}
+.bento-item:hover .bento-name { transform: translateY(0); opacity: 1; }
+
+.bento-cat {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: var(--accent-soft);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  transform: translateY(8px);
+  opacity: 0;
+  transition: all 0.4s 0.15s;
+}
+.bento-item:hover .bento-cat { transform: translateY(0); opacity: 1; }
+
+.bento-arrow {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transform: scale(0.7) rotate(-45deg);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.bento-item:hover .bento-arrow {
+  transform: scale(1) rotate(0);
+  opacity: 1;
+}
+
+/* ═══════════════ CATEGORIES HORIZONTAL ═══════════════ */
+.categories-section {
+  padding: 80px 0;
+  position: relative;
+  z-index: 1;
+}
+.categories-scroll {
+  display: flex;
+  gap: 16px;
+  padding: 0 40px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x mandatory;
+}
+.categories-scroll::-webkit-scrollbar { display: none; }
+
+.cat-card {
+  flex-shrink: 0;
+  width: 220px;
+  padding: 32px 24px;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  transition: all 0.4s;
+  scroll-snap-align: start;
+  text-align: center;
+}
+.cat-card:hover {
+  background: var(--bg-hover);
+  border-color: rgba(232, 86, 58, 0.15);
+  transform: translateY(-4px);
+}
+.cat-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.cat-card:hover .cat-icon { transform: scale(1.15) translateY(-2px); }
+
+.cat-name {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  margin-bottom: 6px;
+}
+.cat-count {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* ═══════════════ TESTIMONIAL / ABOUT ═══════════════ */
+.about-section {
+  padding: 120px 40px;
+  position: relative;
+  z-index: 1;
+}
+.about-card {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 64px;
+  border-radius: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.about-card::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+.about-quote {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 200;
+  line-height: 1.5;
+  margin-bottom: 32px;
+  position: relative;
+}
+.about-quote em {
+  font-style: italic;
+  color: var(--accent);
+}
+.about-author {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* ═══════════════ CTA ═══════════════ */
+.cta-section {
+  padding: 120px 40px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.cta-title {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 200;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+.cta-sub {
+  font-size: 16px;
+  color: var(--text-dim);
+  margin-bottom: 40px;
+}
+.cta-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+/* ═══════════════ FOOTER ═══════════════ */
+footer {
+  padding: 40px;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.footer-logo {
+  font-family: 'Sora', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+}
+.footer-copy {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* ═══════════════ SCROLL ANIMATIONS ═══════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+.reveal-d4 { transition-delay: 0.35s; }
+.reveal-d5 { transition-delay: 0.4s; }
+
+.concept-label {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.4;
+  z-index: 100;
+  font-family: 'Space Mono', monospace;
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="gradient-orb"></div>
+<div class="gradient-orb-2"></div>
+<div class="concept-label">Concept C — Obsidian</div>
+
+<!-- NAVIGATION (Floating Pill) -->
+<nav>
+  <span class="nav-logo">Home Studio</span>
+  <a href="#projects" class="active">Проекты</a>
+  <a href="#categories">Категории</a>
+  <a href="#about">О нас</a>
+  <a href="#contact">Контакт</a>
+  <button class="lang-btn">ՀԱ / РУ</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Мастерская в Гюмри • С 2018 года
+  </div>
+  <h1 class="hero-title" id="heroTitle"></h1>
+  <p class="hero-sub">Создаём мебель на заказ из MDF, ламината и современных материалов. Кухни, шкафы, спальни — каждый проект уникален.</p>
+  <div class="hero-buttons">
+    <button class="btn-glow">Смотреть проекты →</button>
+    <button class="btn-glass">Связаться</button>
+  </div>
+  
+  <div class="hero-showcase">
+    <div class="showcase-frame">
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=85" alt="Featured Kitchen">
+    </div>
+    <div class="float-tag float-tag-1">
+      <div class="tag-code">KIT-024</div>
+      <div class="tag-label">Modern Oak Kitchen</div>
+    </div>
+    <div class="float-tag float-tag-2">
+      <div class="tag-code">48+</div>
+      <div class="tag-label">Завершённых проектов</div>
+    </div>
+    <div class="float-tag float-tag-3">
+      <div class="tag-code">★ 5.0</div>
+      <div class="tag-label">Рейтинг клиентов</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS (Bento Grid) -->
+<section class="projects-section" id="projects">
+  <div class="section-header reveal">
+    <div class="section-label"><span class="badge-dot"></span> Портфолио</div>
+    <h2 class="section-title">Наши последние проекты</h2>
+  </div>
+  <div class="bento-grid">
+    <div class="bento-item reveal reveal-d1">
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80" alt="Kitchen">
+      <div class="bento-overlay">
+        <span class="bento-code">KIT-024</span>
+        <span class="bento-name">Modern Oak Kitchen</span>
+        <span class="bento-cat">Кухни</span>
+      </div>
+      <div class="bento-arrow">↗</div>
+    </div>
+    <div class="bento-item reveal reveal-d2">
+      <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80" alt="Bedroom">
+      <div class="bento-overlay">
+        <span class="bento-code">BDR-018</span>
+        <span class="bento-name">Minimalist Bedroom</span>
+        <span class="bento-cat">Спальни</span>
+      </div>
+      <div class="bento-arrow">↗</div>
+    </div>
+    <div class="bento-item reveal reveal-d3">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80" alt="Wardrobe">
+      <div class="bento-overlay">
+        <span class="bento-code">WRD-011</span>
+        <span class="bento-name">Walk-in Wardrobe</span>
+        <span class="bento-cat">Шкафы</span>
+      </div>
+      <div class="bento-arrow">↗</div>
+    </div>
+    <div class="bento-item reveal reveal-d4">
+      <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800&q=80" alt="Living">
+      <div class="bento-overlay">
+        <span class="bento-code">LIV-007</span>
+        <span class="bento-name">Scandinavian Living Set</span>
+        <span class="bento-cat">Гостиные</span>
+      </div>
+      <div class="bento-arrow">↗</div>
+    </div>
+    <div class="bento-item reveal reveal-d5">
+      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="TV Unit">
+      <div class="bento-overlay">
+        <span class="bento-code">TVU-005</span>
+        <span class="bento-name">Entertainment Center</span>
+        <span class="bento-cat">TV-зоны</span>
+      </div>
+      <div class="bento-arrow">↗</div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories-section" id="categories">
+  <div class="section-header reveal" style="padding: 0 40px;">
+    <div class="section-label"><span class="badge-dot"></span> Категории</div>
+    <h2 class="section-title">Что мы создаём</h2>
+  </div>
+  <div class="categories-scroll" style="margin-top: 40px;">
+    <div class="cat-card reveal reveal-d1">
+      <span class="cat-icon">🍳</span>
+      <div class="cat-name">Кухни</div>
+      <div class="cat-count">12 проектов</div>
+    </div>
+    <div class="cat-card reveal reveal-d2">
+      <span class="cat-icon">👔</span>
+      <div class="cat-name">Шкафы</div>
+      <div class="cat-count">8 проектов</div>
+    </div>
+    <div class="cat-card reveal reveal-d3">
+      <span class="cat-icon">🛏️</span>
+      <div class="cat-name">Спальни</div>
+      <div class="cat-count">10 проектов</div>
+    </div>
+    <div class="cat-card reveal reveal-d4">
+      <span class="cat-icon">🛋️</span>
+      <div class="cat-name">Гостиные</div>
+      <div class="cat-count">6 проектов</div>
+    </div>
+    <div class="cat-card reveal reveal-d5">
+      <span class="cat-icon">📺</span>
+      <div class="cat-name">TV-зоны</div>
+      <div class="cat-count">5 проектов</div>
+    </div>
+    <div class="cat-card reveal">
+      <span class="cat-icon">💼</span>
+      <div class="cat-name">Офис</div>
+      <div class="cat-count">4 проекта</div>
+    </div>
+    <div class="cat-card reveal">
+      <span class="cat-icon">🧸</span>
+      <div class="cat-name">Детские</div>
+      <div class="cat-count">3 проекта</div>
+    </div>
+    <div class="cat-card reveal">
+      <span class="cat-icon">✨</span>
+      <div class="cat-name">Индивидуальные</div>
+      <div class="cat-count">7 проектов</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="about-card reveal">
+    <p class="about-quote">«Мы верим, что мебель — это не просто функция. Это <em>характер</em> вашего пространства, отражение вашего <em>стиля</em> и образа жизни.»</p>
+    <p class="about-author">— Мастерская Home Studio, Гюмри</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <h2 class="cta-title reveal">Начнём ваш <span class="gradient-text">проект?</span></h2>
+  <p class="cta-sub reveal reveal-d1">Позвоните или напишите — обсудим идею бесплатно</p>
+  <div class="cta-buttons reveal reveal-d2">
+    <button class="btn-glow">WhatsApp →</button>
+    <button class="btn-glass">+374 XX XXX XXX</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Home Studio</div>
+  <div class="footer-copy">© 2026 Home Studio • Гюмри, Армения</div>
+</footer>
+
+<script>
+// Character-by-character hero title reveal
+const titleText = 'Мебель, которая\nвдохновляет';
+const titleEl = document.getElementById('heroTitle');
+let charIndex = 0;
+
+titleText.split('').forEach((char, i) => {
+  if (char === '\n') {
+    titleEl.appendChild(document.createElement('br'));
+    return;
+  }
+  const span = document.createElement('span');
+  span.className = 'char';
+  span.textContent = char === ' ' ? '\u00A0' : char;
+  // Make "вдохновляет" the gradient text
+  const lineBreakIndex = titleText.indexOf('\n');
+  if (i > lineBreakIndex) {
+    span.classList.add('accent');
+  }
+  span.style.animationDelay = `${0.5 + i * 0.035}s`;
+  titleEl.appendChild(span);
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: homestudio-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+      - uploads-volume:/var/www/uploads
+    depends_on:
+      - backend
+      - frontend
+    restart: always
+
+  backend:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/home-studio-backend:latest
+    container_name: homestudio-backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
+      - JWT_SECRET=${JWT_SECRET}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - UPLOAD_DIR=/uploads
+      - CORS_ORIGINS=${CORS_ORIGINS}
+    volumes:
+      - uploads-volume:/uploads
+    restart: always
+
+  frontend:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/home-studio-frontend:latest
+    container_name: homestudio-frontend
+    restart: always
+
+volumes:
+  uploads-volume:

@@ -1,0 +1,78 @@
+# =========================================================================
+# Home Studio Workspace Gitignore
+# =========================================================================
+
+# --- System / OS Files ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# --- Editor / IDE Configurations ---
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swo
+*.swp
+*.orig
+*~
+.classpath
+.project
+.settings/
+*.sublime-workspace
+*.sublime-project
+.recommenders/
+
+# --- Docker & Environment Files ---
+.env
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+docker-compose.override.yml
+
+# Do NOT ignore the public mock configuration file
+!.env.mock
+!frontend/.env.mock
+
+# --- Local Uploads / Temporary Media ---
+uploads/
+**/uploads/
+uploads-volume/
+**/uploads-volume/
+
+# --- Local SSL Certs ---
+nginx/certs/*
+!nginx/certs/.gitkeep
+
+# --- Frontend (React / TypeScript / Vite) ---
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/.tmp/
+
+# --- Backend (Spring Boot / Maven / Java) ---
+backend/target/
+backend/bin/
+backend/*.log
+backend/dependency-reduced-pom.xml
+backend/.flattened-pom.xml
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# --- Local Spring Boot Profiles / Configs ---
+# Exclude local database credentials and server port overrides
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-local.properties

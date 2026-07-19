@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Studio — Concept B: Lumière</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Inter:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f8f5f0;
+  --bg-alt: #efe9e0;
+  --surface: #ffffff;
+  --text: #1a1714;
+  --text-muted: #8a837a;
+  --accent: #b8956a;
+  --accent-dark: #96764e;
+  --accent-light: #d4bc9a;
+  --border: rgba(26, 23, 20, 0.08);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ═══════════════ SMOOTH SCROLL CONTAINER ═══════════════ */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ═══════════════ NAVIGATION ═══════════════ */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 28px 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+nav.scrolled {
+  padding: 16px 56px;
+  background: rgba(248, 245, 240, 0.85);
+  backdrop-filter: blur(20px) saturate(1.2);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+  align-items: center;
+}
+.nav-links a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  position: relative;
+  transition: color 0.3s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateX(-50%) scale(0);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.nav-links a:hover::after { transform: translateX(-50%) scale(1); }
+.nav-links a:hover { color: var(--accent-dark); }
+
+.lang-switch {
+  display: flex;
+  gap: 4px;
+  background: rgba(26, 23, 20, 0.04);
+  border-radius: 20px;
+  padding: 4px;
+}
+.lang-switch span {
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: 0.05em;
+}
+.lang-switch span.active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+/* ═══════════════ HERO ═══════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 120px 56px 80px;
+  position: relative;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 80px;
+  align-items: center;
+  width: 100%;
+}
+
+.hero-text { max-width: 560px; }
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+  margin-bottom: 32px;
+  clip-path: inset(0 100% 0 0);
+  animation: clipReveal 0.8s 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+.hero-eyebrow .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(48px, 6vw, 88px);
+  font-weight: 300;
+  line-height: 1.05;
+  margin-bottom: 32px;
+}
+.hero-title .word {
+  display: inline-block;
+  overflow: hidden;
+}
+.hero-title .word-inner {
+  display: inline-block;
+  transform: translateY(110%);
+  animation: wordReveal 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+.hero-title .word:nth-child(1) .word-inner { animation-delay: 0.3s; }
+.hero-title .word:nth-child(2) .word-inner { animation-delay: 0.4s; }
+.hero-title .word:nth-child(3) .word-inner { animation-delay: 0.5s; }
+.hero-title .word:nth-child(4) .word-inner { animation-delay: 0.6s; }
+.hero-title .word:nth-child(5) .word-inner { animation-delay: 0.7s; }
+.hero-title .word:nth-child(6) .word-inner { animation-delay: 0.8s; }
+.hero-title .word:nth-child(7) .word-inner { animation-delay: 0.9s; }
+
+@keyframes wordReveal {
+  to { transform: translateY(0); }
+}
+@keyframes clipReveal {
+  to { clip-path: inset(0 0% 0 0); }
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--accent-dark);
+}
+
+.hero-desc {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text-muted);
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: fadeUp 0.8s 1s ease forwards;
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+  from { transform: translateY(20px); }
+}
+
+.hero-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.2s ease forwards;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  border-radius: 100px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent-dark);
+  border-radius: 100px;
+  transform: scale(0);
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.btn-primary:hover::before { transform: scale(1); }
+.btn-primary span { position: relative; z-index: 1; }
+.btn-primary .btn-arrow {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s;
+  font-size: 16px;
+}
+.btn-primary:hover .btn-arrow { transform: translateX(4px); }
+
+.btn-secondary {
+  padding: 16px 32px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: var(--text);
+}
+.btn-secondary:hover {
+  border-color: var(--accent);
+  background: rgba(184, 149, 106, 0.06);
+}
+
+/* Hero Image */
+.hero-image-container {
+  position: relative;
+  opacity: 0;
+  animation: imageReveal 1.2s 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+@keyframes imageReveal {
+  from { opacity: 0; clip-path: inset(10% 10% 10% 10% round 20px); transform: scale(0.95); }
+  to { opacity: 1; clip-path: inset(0% 0% 0% 0% round 20px); transform: scale(1); }
+}
+
+.hero-image-wrapper {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+}
+.hero-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.hero-image-wrapper:hover img { transform: scale(1.05); }
+
+.hero-float-card {
+  position: absolute;
+  bottom: -20px;
+  left: -40px;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  animation: floatCard 3s ease-in-out infinite alternate;
+  z-index: 2;
+}
+@keyframes floatCard {
+  from { transform: translateY(0); }
+  to { transform: translateY(-8px); }
+}
+.float-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--accent-light);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+.float-text .float-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+}
+.float-text .float-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.hero-float-card-2 {
+  position: absolute;
+  top: 40px;
+  right: -30px;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+  animation: floatCard2 4s ease-in-out infinite alternate;
+  z-index: 2;
+}
+@keyframes floatCard2 {
+  from { transform: translateY(0) rotate(-2deg); }
+  to { transform: translateY(-12px) rotate(0deg); }
+}
+.float-code {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  color: var(--accent-dark);
+  letter-spacing: 0.05em;
+}
+.float-cat {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ═══════════════ MARQUEE ═══════════════ */
+.marquee-section {
+  padding: 60px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex;
+  animation: marqueeScroll 25s linear infinite;
+  width: max-content;
+}
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-item {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 40px;
+  white-space: nowrap;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--text-muted);
+}
+.marquee-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ═══════════════ PROJECTS GRID ═══════════════ */
+.projects-section {
+  padding: 120px 56px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 60px;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 300;
+  line-height: 1.1;
+}
+.section-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 300px;
+  text-align: right;
+  line-height: 1.6;
+}
+
+/* Category pills */
+.category-pills {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+.pill {
+  padding: 10px 24px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  color: var(--text-muted);
+  position: relative;
+  overflow: hidden;
+}
+.pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--text);
+  border-radius: 100px;
+  transform: scale(0);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.pill.active, .pill:hover {
+  border-color: var(--text);
+  color: var(--bg);
+}
+.pill.active::before, .pill:hover::before { transform: scale(1); }
+.pill span { position: relative; z-index: 1; }
+
+/* Project grid */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+.project-item {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 3/4;
+}
+.project-item:nth-child(2) { margin-top: 48px; }
+.project-item:nth-child(3) { margin-top: 96px; }
+
+.project-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.project-item:hover img { transform: scale(1.06); }
+
+.project-item .proj-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(26,23,20,0.7) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 28px;
+}
+.project-item:hover .proj-overlay { opacity: 1; }
+
+.proj-overlay .proj-code {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-light);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  transform: translateY(10px);
+  transition: transform 0.4s 0.05s;
+}
+.project-item:hover .proj-code { transform: translateY(0); }
+
+.proj-overlay .proj-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  color: #fff;
+  transform: translateY(10px);
+  transition: transform 0.4s 0.1s;
+}
+.project-item:hover .proj-name { transform: translateY(0); }
+
+.proj-overlay .proj-arrow {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #fff;
+  transform: translateY(-10px) scale(0.8);
+  opacity: 0;
+  transition: all 0.4s 0.15s;
+}
+.project-item:hover .proj-arrow {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* ═══════════════ STATS BANNER ═══════════════ */
+.stats-section {
+  padding: 80px 56px;
+  background: var(--bg-alt);
+  border-radius: 32px;
+  margin: 0 56px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  text-align: center;
+}
+.stat-item .stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 56px;
+  font-weight: 300;
+  color: var(--accent-dark);
+  line-height: 1;
+}
+.stat-item .stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  letter-spacing: 0.05em;
+}
+
+/* ═══════════════ CTA SECTION ═══════════════ */
+.cta-section {
+  padding: 160px 56px;
+  text-align: center;
+  position: relative;
+}
+.cta-section .cta-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 5vw, 72px);
+  font-weight: 300;
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+.cta-section .cta-title em {
+  font-style: italic;
+  color: var(--accent-dark);
+}
+.cta-section .cta-desc {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 48px;
+  line-height: 1.7;
+}
+.cta-section .cta-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+/* ═══════════════ FOOTER ═══════════════ */
+footer {
+  padding: 48px 56px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+footer .footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+}
+footer .footer-info {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ═══════════════ SCROLL ANIMATIONS ═══════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+.reveal-d4 { transition-delay: 0.4s; }
+
+/* Count up animation */
+.count-up {
+  display: inline-block;
+}
+
+/* Concept label */
+.concept-label {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+  opacity: 0.5;
+  z-index: 100;
+  font-family: 'Space Mono', monospace;
+}
+</style>
+</head>
+<body>
+
+<div class="noise-overlay"></div>
+<div class="concept-label">Concept B — Lumière</div>
+
+<!-- NAVIGATION -->
+<nav id="nav">
+  <div class="logo">Home Studio</div>
+  <ul class="nav-links">
+    <li><a href="#projects">Проекты</a></li>
+    <li><a href="#categories">Категории</a></li>
+    <li><a href="#about">О мастерской</a></li>
+    <li><a href="#contact">Связаться</a></li>
+    <li>
+      <div class="lang-switch">
+        <span class="active">ՀԱ</span>
+        <span>РУ</span>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-text">
+      <div class="hero-eyebrow">
+        <span class="dot"></span>
+        Custom Furniture Workshop — Gyumri
+      </div>
+      <h1 class="hero-title">
+        <span class="word"><span class="word-inner">Мебель</span></span>
+        <span class="word"><span class="word-inner">&nbsp;как</span></span><br>
+        <span class="word"><span class="word-inner"><em>искусство</em></span></span>
+        <span class="word"><span class="word-inner">&nbsp;для</span></span><br>
+        <span class="word"><span class="word-inner">вашего</span></span>
+        <span class="word"><span class="word-inner">&nbsp;дома</span></span>
+      </h1>
+      <p class="hero-desc">Создаём уникальную мебель на заказ — кухни, шкафы, спальни и гостиные. Каждый проект начинается с вашей идеи.</p>
+      <div class="hero-actions">
+        <button class="btn-primary">
+          <span>Смотреть проекты</span>
+          <span class="btn-arrow">→</span>
+        </button>
+        <button class="btn-secondary">Связаться с нами</button>
+      </div>
+    </div>
+    <div class="hero-image-container">
+      <div class="hero-image-wrapper">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85" alt="Kitchen">
+      </div>
+      <div class="hero-float-card">
+        <div class="float-icon">✦</div>
+        <div class="float-text">
+          <div class="float-value">48+</div>
+          <div class="float-label">Завершённых проектов</div>
+        </div>
+      </div>
+      <div class="hero-float-card-2">
+        <div class="float-code">KIT-024</div>
+        <div class="float-cat">Modern Oak Kitchen</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<section class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item">Кухни <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Шкафы <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Спальни <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Гостиные <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Детские <span class="marquee-dot"></span></div>
+    <div class="marquee-item">TV-зоны <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Офис <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Кухни <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Шкафы <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Спальни <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Гостиные <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Детские <span class="marquee-dot"></span></div>
+    <div class="marquee-item">TV-зоны <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Офис <span class="marquee-dot"></span></div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects-section" id="projects">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-title">Наши<br><em>последние</em> работы</div>
+    </div>
+    <div class="section-subtitle">Каждый проект создан вручную с вниманием к каждой детали</div>
+  </div>
+  
+  <div class="category-pills reveal">
+    <button class="pill active"><span>Все проекты</span></button>
+    <button class="pill"><span>Кухни</span></button>
+    <button class="pill"><span>Шкафы</span></button>
+    <button class="pill"><span>Спальни</span></button>
+    <button class="pill"><span>Гостиные</span></button>
+    <button class="pill"><span>Детские</span></button>
+  </div>
+
+  <div class="projects-grid">
+    <div class="project-item reveal reveal-d1">
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&q=80" alt="Project">
+      <div class="proj-overlay">
+        <span class="proj-code">KIT-024</span>
+        <span class="proj-name">Modern Oak Kitchen</span>
+        <div class="proj-arrow">↗</div>
+      </div>
+    </div>
+    <div class="project-item reveal reveal-d2">
+      <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=700&q=80" alt="Project">
+      <div class="proj-overlay">
+        <span class="proj-code">BDR-018</span>
+        <span class="proj-name">Minimalist Bedroom</span>
+        <div class="proj-arrow">↗</div>
+      </div>
+    </div>
+    <div class="project-item reveal reveal-d3">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=700&q=80" alt="Project">
+      <div class="proj-overlay">
+        <span class="proj-code">WRD-011</span>
+        <span class="proj-name">Walk-in Wardrobe</span>
+        <div class="proj-arrow">↗</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section reveal">
+  <div class="stat-item">
+    <div class="stat-number"><span class="count-up" data-target="48">0</span>+</div>
+    <div class="stat-label">Проектов</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number"><span class="count-up" data-target="6">0</span>+</div>
+    <div class="stat-label">Лет опыта</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number"><span class="count-up" data-target="8">0</span></div>
+    <div class="stat-label">Категорий</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number"><span class="count-up" data-target="100">0</span>%</div>
+    <div class="stat-label">На заказ</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <h2 class="cta-title reveal">Готовы создать<br>мебель <em>вашей мечты?</em></h2>
+  <p class="cta-desc reveal reveal-d1">Расскажите нам о вашей идее — мы воплотим её в жизнь</p>
+  <div class="cta-buttons reveal reveal-d2">
+    <button class="btn-primary"><span>WhatsApp</span> <span class="btn-arrow">→</span></button>
+    <button class="btn-secondary">+374 XX XXX XXX</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Home Studio</div>
+  <div class="footer-info">© 2026 Home Studio • Gyumri, Armenia</div>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 80);
+});
+
+// Category pills
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+  });
+});
+
+// Count up animation
+const countObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      let current = 0;
+      const step = target / 40;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = Math.floor(current);
+      }, 30);
+      countObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.count-up').forEach(el => countObserver.observe(el));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.backup
+pom.xml.branch
+release.properties
+release.txt
+*.iml
+.idea/
+.mvn/
+.git/
+.gitignore
