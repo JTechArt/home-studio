@@ -20,27 +20,47 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     headers.set('Content-Type', 'application/json');
   }
 
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers,
-  });
+  try {
+    const response = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers,
+    });
 
-  if (!response.ok) {
-    if (response.status === 403 || response.status === 401) {
-      localStorage.removeItem('token');
-      if (!window.location.pathname.startsWith('/admin/login') && window.location.pathname.includes('/admin')) {
-        window.location.href = '/admin/login';
+    // If a request succeeds, clear any previous mock fallback flags
+    localStorage.removeItem('mock_fallback');
+
+    if (!response.ok) {
+      if (response.status === 403 || response.status === 401) {
+        localStorage.removeItem('token');
+        if (!window.location.pathname.startsWith('/admin/login') && window.location.pathname.includes('/admin')) {
+          window.location.href = '/admin/login';
+        }
       }
+      const errBody = await response.json().catch(() => ({}));
+      throw new Error(errBody.error || `HTTP error! status: ${response.status}`);
     }
-    const errBody = await response.json().catch(() => ({}));
-    throw new Error(errBody.error || `HTTP error! status: ${response.status}`);
-  }
 
-  if (response.status === 204) {
-    return {} as T;
-  }
+    if (response.status === 204) {
+      return {} as T;
+    }
 
-  return response.json();
+    return response.json();
+  } catch (error: any) {
+    // If the request fails due to connection issues (e.g. backend is not running),
+    // automatically fallback to mock data so the app doesn't crash.
+    const isNetworkError = error instanceof TypeError || 
+                           (error.message && (
+                             error.message.includes('Failed to fetch') || 
+                             error.message.includes('NetworkError') || 
+                             error.message.includes('fetch failed')
+                           ));
+    if (isNetworkError) {
+      console.warn(`Backend API unreachable at ${API_BASE}. Falling back to offline Mock Data Mode.`);
+      localStorage.setItem('mock_fallback', 'true');
+      return handleMockRequest(path, options);
+    }
+    throw error;
+  }
 }
 
 export const api = {

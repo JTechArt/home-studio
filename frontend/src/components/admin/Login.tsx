@@ -84,6 +84,23 @@ export const Login: React.FC = () => {
           Portfolio Management Panel
         </p>
 
+        {(import.meta.env.VITE_USE_MOCKS === 'true' || localStorage.getItem('mock_fallback') === 'true') && (
+          <div style={{ 
+            padding: '14px', 
+            background: 'rgba(201, 169, 110, 0.1)', 
+            border: '1px solid var(--accent, #c9a96e)', 
+            borderRadius: '6px', 
+            color: 'var(--accent, #c9a96e)', 
+            fontSize: '13px', 
+            lineHeight: '1.5',
+            marginBottom: '24px',
+            textAlign: 'center'
+          }}>
+            <strong style={{ display: 'block', marginBottom: '4px' }}>🛠️ Mock Dev Mode Active</strong>
+            Use username <strong>admin</strong> (any password works).
+          </div>
+        )}
+
         {error && (
           <div style={{ padding: '12px', background: 'rgba(247, 90, 104, 0.1)', border: '1px solid #f75a68', borderRadius: '6px', color: '#f75a68', fontSize: '13px', marginBottom: '20px' }}>
             {error}

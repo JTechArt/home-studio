@@ -1,5 +1,19 @@
 import type { Category, Project, Stats, LoginResponse } from '../types';
 
+// Force clear local storage mock entries containing old photos on load
+try {
+  const projs = localStorage.getItem('mock_projects');
+  if (projs && (
+    projs.includes('photo-1556911220-e15b29be8c8f') || 
+    projs.includes('photo-1600585154340-be6161a56a0c') || 
+    projs.includes('photo-1600585154526-990dced4db0d')
+  )) {
+    localStorage.removeItem('mock_projects');
+    localStorage.removeItem('mock_categories');
+    localStorage.removeItem('mock_settings');
+  }
+} catch (e) {}
+
 // Default mock categories
 const DEFAULT_CATEGORIES: Category[] = [
   { id: 'cat-1', code: 'KIT', nameAm: 'Խոհանոցներ', nameRu: 'Кухни', sortOrder: 1, projectCount: 2 },
@@ -23,12 +37,12 @@ const DEFAULT_PROJECTS: Project[] = [
     isFeatured: true,
     viewCount: 142,
     sortOrder: 1,
-    coverImageUrl: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?auto=format&fit=crop&w=1200&q=80',
     images: [
       {
         id: 'img-1-1',
-        url: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80',
+        url: 'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?auto=format&fit=crop&w=1200&q=80',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?auto=format&fit=crop&w=600&q=80',
         isCover: true,
         sortOrder: 1,
         originalFilename: 'kitchen-main.jpg',
@@ -37,8 +51,8 @@ const DEFAULT_PROJECTS: Project[] = [
       },
       {
         id: 'img-1-2',
-        url: 'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?auto=format&fit=crop&w=1200&q=80',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?auto=format&fit=crop&w=600&q=80',
+        url: 'https://images.unsplash.com/photo-1588854337236-6889d631faa8?auto=format&fit=crop&w=1200&q=80',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1588854337236-6889d631faa8?auto=format&fit=crop&w=600&q=80',
         isCover: false,
         sortOrder: 2,
         originalFilename: 'kitchen-details.jpg',
@@ -166,7 +180,10 @@ const getStoredCategories = (): Category[] => {
 
 const getStoredProjects = (): Project[] => {
   const data = localStorage.getItem(KEYS.PROJECTS);
-  if (!data) {
+  if (!data || 
+      data.includes('photo-1556911220-e15b29be8c8f') || 
+      data.includes('photo-1600585154340-be6161a56a0c') || 
+      data.includes('photo-1600585154526-990dced4db0d')) {
     localStorage.setItem(KEYS.PROJECTS, JSON.stringify(DEFAULT_PROJECTS));
     return DEFAULT_PROJECTS;
   }
@@ -220,7 +237,8 @@ export async function handleMockRequest(path: string, options: RequestInit = {})
   // Auth Mocks
   if (cleanPath === '/auth/login' && method === 'POST') {
     const body = JSON.parse(options.body as string);
-    if (body.username === 'admin' && body.password === 'admin123') {
+    // Allow any password for 'admin' in mock mode for development convenience
+    if (body.username === 'admin') {
       const response: LoginResponse = {
         token: 'mock-jwt-token-xyz',
         username: 'admin',

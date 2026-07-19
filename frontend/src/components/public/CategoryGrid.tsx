@@ -29,7 +29,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
 
   const getCategoryImage = (code: string) => {
     const images: Record<string, string> = {
-      'KIT': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80',
+      'KIT': 'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=600&q=80',
       'WRD': 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80',
       'BDR': 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80',
       'LIV': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80',

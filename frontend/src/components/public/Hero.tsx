@@ -34,7 +34,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToGallery, coverImage }) => 
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    filter: 'brightness(0.35) contrast(1.1)',
+    filter: 'brightness(0.85) contrast(1.02)',
     transform: 'scale(1.1)',
     animation: 'heroZoom 12s ease-in-out infinite alternate',
   };
@@ -117,7 +117,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToGallery, coverImage }) => 
     fontFamily: 'inherit',
   };
 
-  const defaultHeroImg = 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=85';
+  const defaultHeroImg = 'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=1920&q=85';
 
   return (
     <section style={heroStyle} id="hero">
