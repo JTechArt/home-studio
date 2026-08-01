@@ -3,13 +3,13 @@ version: '3.8'
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: homestudio-postgres-local
+    container_name: postgres-local
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_DB=homestudio
-      - POSTGRES_USER=homestudio
-      - POSTGRES_PASSWORD=homestudio
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     volumes:
       - pgdata-local:/var/lib/postgresql/data
     restart: unless-stopped
