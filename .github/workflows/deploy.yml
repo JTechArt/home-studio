@@ -17,8 +17,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_BACKEND: ghcr.io/${{ github.repository }}-backend:latest
-  IMAGE_FRONTEND: ghcr.io/${{ github.repository }}-frontend:latest
+  IMAGE_BACKEND: ghcr.io/${{ toLower(github.repository) }}-backend:latest
+  IMAGE_FRONTEND: ghcr.io/${{ toLower(github.repository) }}-frontend:latest
 
 jobs:
   build-and-push:
